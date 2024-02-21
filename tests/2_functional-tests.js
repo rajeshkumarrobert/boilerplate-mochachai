@@ -16,8 +16,8 @@ suite('Functional Tests', function () {
         .keepOpen()
         .get('/hello')
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, 'hello Guest');
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'hello Guest');
           done();
         });
     });
@@ -28,8 +28,8 @@ suite('Functional Tests', function () {
         .keepOpen()
         .get('/hello?name=xy_z')
         .end(function (err, res) {
-          assert.fail(res.status, 200);
-          assert.fail(res.text, 'hello xy_z');
+          assert.equal(res.status, 200);
+          assert.equal(res.text, 'hello xy_z');
           done();
         });
     });
@@ -39,17 +39,33 @@ suite('Functional Tests', function () {
         .request(server)
         .keepOpen()
         .put('/travellers')
-
+        .send({surname:'Colombo'})
         .end(function (err, res) {
-          assert.fail();
-
+          //assert.fail();
+          assert.equal(res.status,200);
+          assert.equal(res.type, 'application/json', 'Response should be json');
+          assert.equal(res.body.name,
+                'Cristoforo','res.body.name should be "Christoforo"'  );
+          assert.equal( res.body.surname,
+                'Colombo', 'res.body.surname should be "Colombo"');
           done();
         });
     });
     // #4
     test('Send {surname: "da Verrazzano"}', function (done) {
-      assert.fail();
-
+      chai
+      .request(server)
+      .keepOpen()
+      .put('/travellers')
+      .send({surname:'da Verrazzano'})
+      .end(function (err, res){
+        assert.equal(res.status,200);
+        assert.equal(res.type, 'application/json', 'Response should be json');
+        assert.equal(res.body.name,
+          'Giovanni','res.body.name should be "Giovanni"'  );
+        assert.equal( res.body.surname,
+          'da Verrazzano', 'res.body.surname should be "da Verrazzano"');
+      });
       done();
     });
   });
